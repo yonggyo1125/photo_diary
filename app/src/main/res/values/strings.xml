@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">diary</string>
+    <string name="loginUser">아이디</string>
+    <string name="loginPassword">비밀번호</string>
+    <string name="login">로그인</string>
+    <string name="findLoginUser">아이디 찾기</string>
+    <string name="findLoginPassword">비밀번호 찾기</string>
+    <string name="joinUser">회원가입</string>
+    <!-- 에러 메세지 -->
+    <string name="requiredLoginUser">아이디를 입력하세요.</string>
+    <string name="requiredLoginPassword">비밀번호를 입력하세요.</string>
+
+    <!-- 다이얼로그 -->
+    <string name="confirm">확인</string>
+    <string name="confirm_yes">예</string>
+    <string name="confirm_no">아니오</string>
+    <string name="confirm_cancel">취소</string>
+</resources>

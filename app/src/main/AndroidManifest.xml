@@ -14,15 +14,6 @@
         android:theme="@style/Theme.Diary"
         tools:targetApi="31">
         <activity
-            android:name=".FindUserPassword"
-            android:exported="false" />
-        <activity
-            android:name=".FindLoginUser"
-            android:exported="false" />
-        <activity
-            android:name=".JoinUser"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat"
             android:exported="true">

@@ -2,26 +2,20 @@ package org.koreait.diary;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import org.koreait.diary.commons.ConfirmMessage;
+import org.koreait.diary.commons.AppMenus;
+import org.koreait.diary.member.FindLoginPasswordFragment;
+import org.koreait.diary.member.FindLoginUserFragment;
+import org.koreait.diary.member.JoinUserFragment;
+import org.koreait.diary.member.LoginFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText loginUser;
-    EditText loginPassword;
-    Button loginBtn;
-    Button findLoginUser;
-    Button findLoginPassword;
-    Button joinUser;
+    private LoginFragment loginFragment;
+    private FindLoginPasswordFragment findLoginPasswordFragment;
+    private FindLoginUserFragment findLoginUserFragment;
+    private JoinUserFragment joinUserFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,71 +25,28 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        loginUser = findViewById(R.id.loginUser);
-        loginPassword = findViewById(R.id.loginPassword);
-        loginBtn = findViewById(R.id.loginBtn);
-        findLoginUser = findViewById(R.id.findLoginUser);
-        findLoginPassword = findViewById(R.id.findLoginPassword);
-        joinUser = findViewById(R.id.joinUser);
-
-        // 로그인 버튼 클릭 처리
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    String user = loginUser.getText().toString();
-                    String password = loginPassword.getText().toString();
-                    Resources res = getResources();
-                    if (user.trim().isEmpty()) {
-                        throw new RuntimeException(res.getString(R.string.requiredLoginUser));
-                    }
-
-                    if (password.trim().isEmpty()) {
-                        throw new RuntimeException(res.getString(R.string.requiredLoginPassword));
-                    }
-
-                    processLogin(user, password);
-                } catch (RuntimeException e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-             }
-        });
-
-        // 아이디 찾기 클릭 처리
-        findLoginUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FindLoginUser.class);
-                startActivity(intent);
-            }
-        });
-
-        // 비밀번호 찾기 클릭 처리
-        findLoginPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FindUserPassword.class);
-                startActivity(intent);
-            }
-        });
-
-        // 회원 가입 버튼 클릭 처리
-        joinUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), JoinUser.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-            }
-        });
+        /** 회원 관련 Fragment S */
+        loginFragment = (LoginFragment)getSupportFragmentManager().findFragmentById(R.id.loginFragment); // 로그인
+        findLoginPasswordFragment = new FindLoginPasswordFragment(); // 로그인 비밀번호 찾기
+        findLoginUserFragment = new FindLoginUserFragment(); // 로그인 아이디 찾기
+        joinUserFragment = new JoinUserFragment(); // 회원가입
+        /** 회원 관련 Fragment E */
     }
 
-    /**
-     * 로그인 처리
-     * @param user 아이디
-     * @param password 비밀번호
-     */
-    private void processLogin(String user, String password) {
-
+    public void onFragmentChanged(int menu) {
+        switch (menu) {
+            case AppMenus.LOGIN : // 로그인
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, loginFragment).commit();
+                break;
+            case AppMenus.FIND_LOGIN_PASSWORD: // 로그인 비밀번호 찾기
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, findLoginPasswordFragment).commit();
+                break;
+            case AppMenus.FIND_LOGIN_USER:  // 로그인 아이디 찾기
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, findLoginUserFragment).commit();
+                break;
+            case AppMenus.JOIN_USER: // 회원가입
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, joinUserFragment);
+                break;
+        }
     }
 }

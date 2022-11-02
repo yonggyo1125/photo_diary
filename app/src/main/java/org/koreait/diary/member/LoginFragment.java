@@ -1,6 +1,7 @@
 package org.koreait.diary.member;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import org.koreait.diary.MainActivity;
 import org.koreait.diary.R;
 import org.koreait.diary.commons.AppMenus;
+import org.koreait.diary.commons.LoginSession;
 
 /**
  * 로그인 페이지
@@ -62,6 +64,8 @@ public class LoginFragment extends Fragment {
                     }
 
                     processLogin(user, password);
+
+                    mainActivity.onFragmentChanged(AppMenus.MAIN);
                 } catch (RuntimeException e) {
                     Toast.makeText(mainActivity, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -105,6 +109,23 @@ public class LoginFragment extends Fragment {
      * @param password 비밀번호
      */
     private void processLogin(String user, String password) {
+        if (!user.equals("user01") || !password.equals("123456")) {
+            throw new RuntimeException("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
 
+        /** 로그인 처리 S */
+        Member member = new Member();
+        member.setMemNo(1L);
+        member.setMemId(user);
+        member.setMemNm("사용자01");
+        member.setMobile("01000000000");
+
+        LoginSession.setMember(member);
+
+        SharedPreferences pref = getActivity().getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putLong("memNo", 1L);
+        editor.commit();
+        /** 로그인 처리 E */
     }
 }

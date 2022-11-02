@@ -66,6 +66,7 @@ public class LoginFragment extends Fragment {
                     processLogin(user, password);
 
                     mainActivity.onFragmentChanged(AppMenus.MAIN);
+
                 } catch (RuntimeException e) {
                     Toast.makeText(mainActivity, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -95,6 +96,7 @@ public class LoginFragment extends Fragment {
         joinUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 mainActivity.onFragmentChanged(AppMenus.JOIN_USER);
             }
         });

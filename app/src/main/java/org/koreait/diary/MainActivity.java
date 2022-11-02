@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.koreait.diary.commons.AppMenus;
 import org.koreait.diary.commons.LoginSession;
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onFragmentChanged(int menu) {
+        Toast.makeText(this, "menu : " + menu, Toast.LENGTH_LONG).show();
         switch (menu) {
             case AppMenus.LOGIN : // 로그인
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, loginFragment).commit();
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case AppMenus.MAIN:  // 메인화면
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mainFragment);
+                break;
         }
     }
 

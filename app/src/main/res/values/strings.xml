@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">diary</string>
+    <string name="app_name">일기장</string>
     <string name="loginUser">아이디</string>
     <string name="loginPassword">비밀번호</string>
     <string name="login">로그인</string>
+    <string name="logout">로그아웃</string>
+    <string name="mypage">마이페이지</string>
     <string name="findLoginUser">아이디 찾기</string>
     <string name="findLoginPassword">비밀번호 찾기</string>
     <string name="joinUser">회원가입</string>

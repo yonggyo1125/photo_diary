@@ -34,4 +34,8 @@ public class LoginSession {
 
         return false;
     }
+
+    public static void logout() {
+        member = null;
+    }
 }

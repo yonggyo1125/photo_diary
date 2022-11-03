@@ -4,11 +4,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -21,6 +23,8 @@ import org.koreait.diary.member.FindLoginUserFragment;
 import org.koreait.diary.member.JoinUserFragment;
 import org.koreait.diary.member.LoginFragment;
 import org.koreait.diary.member.MainFragment;
+import org.koreait.diary.member.Member;
+import org.koreait.diary.member.MemberButtons;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +38,12 @@ public class MainActivity extends AppCompatActivity {
     private JoinUserFragment joinUserFragment;
     /** 회원 관련 E */
 
-
+    private Button homeBtn;
     private ImageButton moreMenuBtn;
+
+    private FrameLayout memberOnlyButtons; // 회원 전용 버튼 추가
+    private MemberButtons memberButtons; // 회원 전용 버튼
+
     private FrameLayout slideMenuBg;
     private LinearLayout slideMenu;
     private Animation slideOpenAnim;
@@ -50,10 +58,8 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-
-
         /** 회원 관련 Fragment S */
-        loginFragment = (LoginFragment)getSupportFragmentManager().findFragmentById(R.id.loginFragment); // 로그인
+        loginFragment =  new LoginFragment(); // 로그인
         findLoginPasswordFragment = new FindLoginPasswordFragment(); // 로그인 비밀번호 찾기
         findLoginUserFragment = new FindLoginUserFragment(); // 로그인 아이디 찾기
         joinUserFragment = new JoinUserFragment(); // 회원가입
@@ -62,10 +68,11 @@ public class MainActivity extends AppCompatActivity {
         /** 메인 관련 Fragment */
         mainFragment = new MainFragment();
 
+        // 로그인 정보 복구 처리
+        resumeLogin();
+
         // 로그인 상태라면 메인 화면으로 변경
-        if (LoginSession.isLogin()) {
-            onFragmentChanged(AppMenus.MAIN);
-        }
+        checkAccess();
 
         /** 더보기 메뉴 관련 S */
         moreMenuBtn = findViewById(R.id.moreMenuBtn);
@@ -94,8 +101,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        slideMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                slideCloseAnim.cancel();
+            }
+        });
 
         /** 더보기 메뉴 관련 E */
+
+        /** 홈 버튼 클릭 처리 S */
+        homeBtn = findViewById(R.id.homeBtn);
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFragmentChanged(AppMenus.MAIN);
+            }
+        });
+
+        /** 홈 버튼 클릭 처리 E */
+
+        /** 회원 전용 버튼 영역 */
+        memberOnlyButtons = findViewById(R.id.memberOnlyButtons);
+        memberButtons = new MemberButtons(getApplicationContext());
     }
 
 
@@ -103,6 +131,47 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        // 로그인 정보 복구 처리
+        resumeLogin();
+
+        // 로그인 상태라면 메인 화면으로 변경
+        checkAccess();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        // 로그인 정보 복구 처리
+        resumeLogin();
+
+        // 로그인 상태라면 메인 화면으로 변경
+        checkAccess();
+
+    }
+
+    public void onFragmentChanged(int menu) {
+        switch (menu) {
+            case AppMenus.LOGIN : // 로그인
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, loginFragment).commit();
+                break;
+            case AppMenus.FIND_LOGIN_PASSWORD: // 로그인 비밀번호 찾기
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, findLoginPasswordFragment).commit();
+                break;
+            case AppMenus.FIND_LOGIN_USER:  // 로그인 아이디 찾기
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, findLoginUserFragment).commit();
+                break;
+            case AppMenus.JOIN_USER: // 회원가입
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, joinUserFragment).commit();
+                break;
+            case AppMenus.MAIN:  // 메인화면
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mainFragment).commit();
+                break;
+        }
+    }
+
+    // 로그인 정보 복구 처리
+    private void resumeLogin() {
         // 로그인 회원 정보 조회
         if (!LoginSession.isLogin()) {
             SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -115,24 +184,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onFragmentChanged(int menu) {
-        Toast.makeText(this, "menu : " + menu, Toast.LENGTH_LONG).show();
-        switch (menu) {
-            case AppMenus.LOGIN : // 로그인
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_container, loginFragment).commit();
-                break;
-            case AppMenus.FIND_LOGIN_PASSWORD: // 로그인 비밀번호 찾기
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, findLoginPasswordFragment).commit();
-                break;
-            case AppMenus.FIND_LOGIN_USER:  // 로그인 아이디 찾기
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, findLoginUserFragment).commit();
-                break;
-            case AppMenus.JOIN_USER: // 회원가입
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, joinUserFragment);
-                break;
-            case AppMenus.MAIN:  // 메인화면
-                getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mainFragment);
-                break;
+    /**
+     * 접속 권한 체크
+     *
+     * 로그인을 한 경우는 메인페이지, 아닌 경우는 로그인 페이지로 이동
+     */
+    public void checkAccess() {
+        if (memberOnlyButtons == null) {
+            memberOnlyButtons = findViewById(R.id.memberOnlyButtons);
+        }
+
+        if (memberButtons == null) {
+            memberButtons = new MemberButtons(getApplicationContext());
+        }
+
+        if (LoginSession.isLogin()) {
+            onFragmentChanged(AppMenus.MAIN);
+
+            //  로그인한 경우 하단에 로그아웃, 마이페이지 버튼 추가
+            memberOnlyButtons.addView(memberButtons);
+        } else {
+            onFragmentChanged(AppMenus.LOGIN);
+            memberOnlyButtons.removeView(memberButtons);
         }
     }
 
@@ -147,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
         isOpen = true;
         slideMenu.setVisibility(View.VISIBLE);
         slideMenu.startAnimation(slideOpenAnim);
-
 
     }
 

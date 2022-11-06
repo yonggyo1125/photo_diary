@@ -2,6 +2,12 @@
     <string name="app_name">일기장</string>
     <string name="loginUser">아이디</string>
     <string name="loginPassword">비밀번호</string>
+    <string name="memId">아이디</string>
+    <string name="memPw">비밀번호</string>
+    <string name="memPwRe">비밀번호확인</string>
+    <string name="memNm">회원명</string>
+    <string name="email">이메일</string>
+    <string name="mobile">휴대전화</string>
     <string name="login">로그인</string>
     <string name="logout">로그아웃</string>
     <string name="mypage">마이페이지</string>

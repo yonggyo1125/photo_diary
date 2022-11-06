@@ -168,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mainFragment).commit();
                 break;
         }
+
+        if (menu != AppMenus.MAIN && memberOnlyButtons != null) {
+            memberOnlyButtons.removeAllViews();
+        }
     }
 
     // 로그인 정보 복구 처리

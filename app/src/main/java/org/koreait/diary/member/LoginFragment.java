@@ -105,6 +105,16 @@ public class LoginFragment extends Fragment {
         return viewGroup;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        loginUser.setText("");
+        loginPassword.setText("");
+
+
+    }
+
     /**
      * 로그인 처리
      * @param user 아이디

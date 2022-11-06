@@ -61,5 +61,8 @@ public class MemberButtons extends LinearLayout {
         SharedPreferences.Editor editor = pref.edit();
         editor.clear();
         editor.commit();
+
+        MainActivity mainActivity = (MainActivity) context;
+        mainActivity.onFragmentChanged(AppMenus.LOGIN);
     }
 }

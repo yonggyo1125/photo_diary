@@ -23,7 +23,7 @@ import org.koreait.diary.commons.LoginSession;
 public class MemberButtons extends LinearLayout {
 
     private Button logoutBtn;
-    private Button mypageBtn;
+    private Button writeDiary;
     private Context context;
 
     public MemberButtons(Context context) {
@@ -38,11 +38,11 @@ public class MemberButtons extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-
+        MainActivity mainActivity = (MainActivity) context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.member_buttons, this, true);
         logoutBtn = viewGroup.findViewById(R.id.logoutBtn);
-        mypageBtn = viewGroup.findViewById(R.id.mypageBtn);
+        writeDiary = viewGroup.findViewById(R.id.writeDiary);
 
         // 로그아웃 버튼 클릭 처리 S
         logoutBtn.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +52,13 @@ public class MemberButtons extends LinearLayout {
             }
         });
         // 로그아웃 버튼 클릭 처리 E
+
+        writeDiary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainActivity.onFragmentChanged(AppMenus.WRITE_DIARY);
+            }
+        });
     }
 
     private void logout() {

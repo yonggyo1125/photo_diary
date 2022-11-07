@@ -13,4 +13,6 @@ public class AppMenus {
 
     /** 메인 화면 */
     public static final int MAIN = 4;
+
+    public static final int WRITE_DIARY = 5;
 }

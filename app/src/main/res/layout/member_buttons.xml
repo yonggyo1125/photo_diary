@@ -11,8 +11,8 @@
         android:text="@string/logout" />
 
     <Button
-        android:id="@+id/mypageBtn"
+        android:id="@+id/writeDiary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/mypage" />
+        android:text="@string/write_diary" />
 </LinearLayout>
